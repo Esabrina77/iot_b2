@@ -13,6 +13,42 @@
 ```
 ## Diagramme de Séquence
 
+sequenceDiagram
+    participant Utilisateur
+    participant ESP1_Securite
+    participant ESP2_Lumiere
+    participant ESP3_Luminosite
+    participant Broker_MQTT
+
+    %% Badge simulation
+    Utilisateur->>ESP1_Securite: Badge (simulé ou réel)
+    ESP1_Securite->>Broker_MQTT: Publish maison/porte/badge = autorisé|invalide
+    Broker_MQTT-->>ESP1_Securite: Subscribe maison/luminosite
+    Broker_MQTT-->>ESP1_Securite: Subscribe maison/presence
+    Broker_MQTT-->>ESP1_Securite: Subscribe maison/alarme/horaire
+
+    %% Luminosité mesurée
+    ESP3_Luminosite->>Broker_MQTT: Publish maison/luminosite = jour/nuit
+    Broker_MQTT-->>ESP2_Lumiere: maison/luminosite
+
+    %% Présence détectée
+    ESP2_Lumiere->>Broker_MQTT: Publish maison/presence = 1
+    alt Si maison/luminosite == nuit
+        ESP2_Lumiere->>Broker_MQTT: Publish maison/lumiere/etat = on
+    end
+    Broker_MQTT-->>ESP1_Securite: maison/presence = 1
+
+    %% Heure actuelle
+    ESP1_Securite->>Broker_MQTT: Publish maison/heure_courante = 23:00
+    alt Si maison/heure_courante >= maison/alarme/horaire
+        ESP1_Securite->>Broker_MQTT: Publish maison/alarme/etat = on
+    end
+
+    %% Intrusion la nuit
+    alt maison/alarme/etat == on and presence == 1
+        ESP1_Securite->>Broker_MQTT: Publish maison/alarme/intrusion = 1
+        ESP1_Securite->>Buzzer: Déclencher alarme sonore
+    end
 
 
 
