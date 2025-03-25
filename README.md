@@ -13,6 +13,7 @@
 ```
 ## Diagramme de Séquence
 
+```mermaid
 sequenceDiagram
     participant Utilisateur
     participant ESP1_Securite
@@ -49,7 +50,7 @@ sequenceDiagram
         ESP1_Securite->>Broker_MQTT: Publish maison/alarme/intrusion = 1
         ESP1_Securite->>Buzzer: Déclencher alarme sonore
     end
-
+```
 
 
 
