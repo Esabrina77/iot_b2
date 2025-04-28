@@ -6,7 +6,7 @@ sequenceDiagram
     participant Broker_MQTT
     participant ESP1_PollutionPublisher
 
-    Utilisateur ->> Page_Web: Clique "Réserver"
+    Utilisateur ->> Serveur: Clique "Réserver"
     Page_Web -->> Broker_MQTT: Publie sur /reservation/request
     Broker_MQTT -->> ESP2_ParkingManager: Transfert message réservation
 
@@ -19,7 +19,7 @@ sequenceDiagram
         Broker_MQTT -->> ESP2_ParkingManager: Donne coefficient pollution
     else Place occupée
         ESP2_ParkingManager -->> Broker_MQTT: Publie "FULL" sur /reservation/status
-        Broker_MQTT -->> Page_Web: Informe parking complet
+        Broker_MQTT -->> Serveur: Informe parking complet
     end
 
     ESP2_ParkingManager ->> Servo: Ouvre barrière si voiture détectée
